@@ -19,4 +19,11 @@ public class POIController {
     public POI getPOIDetails(@PathVariable("poi_id") long id) {
         return null;
     }
+
+    @GetMapping(value = "/{city}")
+    public POI getAllPOIsByCity(@PathVariable("city") String city) {
+        return null;
+    }
+
+
 }
