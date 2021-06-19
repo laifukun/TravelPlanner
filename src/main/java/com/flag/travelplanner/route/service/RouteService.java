@@ -14,3 +14,5 @@ public interface RouteService {
     void deleteRoute(long id);
     void saveRoute(Route route);
 }
+
+// RouteService interface to be implemented
