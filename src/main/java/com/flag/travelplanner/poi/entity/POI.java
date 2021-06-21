@@ -12,4 +12,7 @@ public class POI implements Serializable {
     private static final long serialVersionUID = 263384195550410516L;
     @Id
     private long poiId;
+    private String name;
+    private String imageUrl;
 }
+// added by fukun
