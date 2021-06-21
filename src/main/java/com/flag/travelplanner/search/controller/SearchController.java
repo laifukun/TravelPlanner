@@ -1,24 +1,38 @@
 package com.flag.travelplanner.search.controller;
 
 import com.flag.travelplanner.poi.entity.POI;
+import com.flag.travelplanner.search.service.SearchService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping(value="/search")
 public class SearchController {
 
+    @Autowired
+    private SearchService searchService;
+
+    /* Search POIs by keyword
+    Keywords could be in name or description
+     */
     @GetMapping("{keyword}")
     @ResponseBody
     public List<POI> searchPOIByKeyword(@PathVariable("keyword") String keyword) {
-        return new ArrayList<>();
+
+        return searchService.searchPOIByKeyword(keyword);
     }
 
-    @GetMapping(value = "/{lat}/{lng}/{bound}")
+    /*
+    Search nearby POIs by three inputs:
+    @lat: latitude of origin position
+    @lng: longitude of origin position
+    @range: search radius in meter
+     */
+    @GetMapping(value = "/{lat}/{lng}/{range}")
     public List<POI> searchNearbyPOIs(@PathVariable("lat") double lat, @PathVariable("lng") double lng,
-                                @PathVariable("bound") double bound) {
-        return new ArrayList<>();
+                                @PathVariable("range") double range) {
+        return searchService.searchNearbyPOIs(lat, lng, range);
     }
 }

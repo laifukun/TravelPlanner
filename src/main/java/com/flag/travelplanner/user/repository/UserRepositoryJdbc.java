@@ -11,11 +11,17 @@ import static java.sql.Types.*;
 public class UserRepositoryJdbc implements UserRepository {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public long count() {
-        return jdbcTemplate.queryForObject("select count(*) from users", Long.class);
+        long count = 0;
+        try {
+            count = jdbcTemplate.queryForObject("select count(*) from users", Long.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 
     @Override
@@ -38,13 +44,12 @@ public class UserRepositoryJdbc implements UserRepository {
         User user = null;
         try {
             user = jdbcTemplate.queryForObject(sqlQuery, new Object[]{id}, new int[]{BIGINT},
-                    (rs, rowNum)->{return new User(rs.getInt("userId"),
+                    (rs, rowNum)-> new User(rs.getInt("userId"),
                             rs.getString("userName"),
                             rs.getString("password"),
                             rs.getString("firstName"),
                             rs.getString("lastName"),
-                            rs.getString("email"));
-            });
+                            rs.getString("email")));
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -57,13 +62,12 @@ public class UserRepositoryJdbc implements UserRepository {
         User user = null;
         try {
             user = jdbcTemplate.queryForObject(sqlQuery, new Object[]{userName}, new int[]{VARCHAR},
-                    (rs, rowNum)->{return new User(rs.getInt("userId"),
+                    (rs, rowNum)-> new User(rs.getInt("userId"),
                             rs.getString("userName"),
                             rs.getString("password"),
                             rs.getString("firstName"),
                             rs.getString("lastName"),
-                            rs.getString("email"));
-                    });
+                            rs.getString("email")));
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -77,13 +81,12 @@ public class UserRepositoryJdbc implements UserRepository {
         User user = null;
         try {
             user = jdbcTemplate.queryForObject(sqlQuery, new Object[]{email}, new int[]{VARCHAR},
-                    (rs, rowNum)->{return new User(rs.getInt("userId"),
+                    (rs, rowNum)-> new User(rs.getInt("userId"),
                             rs.getString("userName"),
                             rs.getString("password"),
                             rs.getString("firstName"),
                             rs.getString("lastName"),
-                            rs.getString("email"));
-                    });
+                            rs.getString("email")));
         } catch(Exception e) {
             e.printStackTrace();
         }
