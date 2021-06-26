@@ -1,6 +1,7 @@
 package com.flag.travelplanner.poi.repository;
 
 import com.flag.travelplanner.poi.entity.POI;
+import org.springframework.stereotype.Repository;
 
 public interface POIRepository {
     public long count();

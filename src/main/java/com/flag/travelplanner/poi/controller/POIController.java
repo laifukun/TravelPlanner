@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value="/pois")
 public class POIController {
 
-  //  @Autowired
-   // private POIService poiService;
+    @Autowired
+    private POIService poiService;
 
     @GetMapping(value = "/{poi_id}")
     public POI getPOIDetails(@PathVariable("poi_id") long id) {
-        return null;
+        return poiService.getPOIDetails(id);
     }
 
-    @GetMapping(value = "/{city}")
-    public POI getAllPOIsByCity(@PathVariable("city") String city) {
+    @GetMapping(value = "/city/{city_name}")
+    public POI getAllPOIsByCity(@PathVariable("city_name") String city) {
         return null;
     }
 

@@ -107,7 +107,13 @@ public class UserRepositoryJdbc implements UserRepository {
 
     @Override
     public int deleteById(long id) {
-        return jdbcTemplate.update("delete from users where userId = ?", id);
+        int row = 0;
+        try {
+            row = jdbcTemplate.update("delete from users where userId = ?", id);
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+        return row;
     }
 
     @Override
