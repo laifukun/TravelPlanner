@@ -7,6 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping(value="/users")
 public class UserController {
@@ -20,9 +25,18 @@ public class UserController {
         userService.register(user);
     }
 
-    @GetMapping(value="/{user_id}")
+    @RequestMapping("/login")
+    public void login(@RequestParam(value = "error") String error, HttpServletResponse response) throws IOException {
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        Map<String, Object> data = new HashMap<>();
+        data.put("message", "bad credentials");
+        response.getOutputStream()
+                .println(data.toString());
+    }
+
+    @GetMapping(value="/{user_name}")
     @ResponseBody
-    public User getUserById(@PathVariable("user_id") long userId) {
-        return userService.getUserById(userId);
+    public User getUserById(@PathVariable("user_name") String userId) {
+        return userService.getUserByUserName(userId);
     }
 }

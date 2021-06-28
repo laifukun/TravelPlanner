@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.sql.Types.BIGINT;
+import static java.sql.Types.VARCHAR;
 
 @Repository
 public class RouteRepositoryJdbc implements RouteRepository{
@@ -33,8 +34,8 @@ public class RouteRepositoryJdbc implements RouteRepository{
         //String startPoint = "POINT("+route.getStartLat()+" "+route.getStartLng()+")";
        // String endPoint = "POINT("+route.getEndLat()+" "+route.getEndLng()+")";
         String sqlRoute = "insert ignore into routes " +
-                "(name, startAddress, endAddress) " +
-                "values ( ?, ?, ?)";
+                "(name, startAddress, endAddress, createdBy) " +
+                "values ( ?, ?, ?, ?)";
         String getLastId = "select last_insert_id()";
         String sqlPOIRoute = "insert into poi_route (poiId, routeId) values(?, ?)";
 
@@ -46,7 +47,8 @@ public class RouteRepositoryJdbc implements RouteRepository{
             jdbcTemplate.update(sqlRoute,
                     route.getName(),
                     route.getStartAddress(),
-                    route.getEndAddress());
+                    route.getEndAddress(),
+                    route.getUser().getUsername());
             long routeId = jdbcTemplate.queryForObject(getLastId, Long.class);
             route.setRouteId(routeId);
             for (POI poi : route.getPoiList()) {
@@ -70,7 +72,6 @@ public class RouteRepositoryJdbc implements RouteRepository{
                 " imageUrl, description, popularity  from pois " +
                 "inner join poi_route on poi_route.poiId=pois.poiId where poi_route.routeId = ?";
 
-        //String userQuery = "select * from users where userId = ?";
         try {
             route = jdbcTemplate.queryForObject(sqlQuery, new Object[]{id}, new int[]{BIGINT},
                     (rs, rowNum)-> new Route(rs.getInt("routeId"),
@@ -87,17 +88,8 @@ public class RouteRepositoryJdbc implements RouteRepository{
                             rs.getString("description"),
                             rs.getDouble("popularity")));
 
-           /* User user = jdbcTemplate.queryForObject(userQuery, new Object[]{id}, new int[]{BIGINT},
-                    (rs, rowNum)-> new User(rs.getInt("userId"),
-                            rs.getString("userName"),
-                            rs.getString("password"),
-                            rs.getString("firstName"),
-                            rs.getString("lastName"),
-                            rs.getString("email")));
 
-            */
             route.setPoiList(POIs);
-            //route.setUser(user);
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -120,7 +112,8 @@ public class RouteRepositoryJdbc implements RouteRepository{
             jdbcTemplate.update(sqlQuery, route.getName(),
                     route.getStartAddress(),
                     route.getEndAddress(),
-                    route.getUser().getUserId());
+                    route.getUser().getUsername(),
+                    route.getRouteId());
             jdbcTemplate.update(deletePOIRoute, route.getRouteId());
             row = jdbcTemplate.batchUpdate(sqlPOIRoute, poiRouteBatchArgs).length;
 
@@ -140,5 +133,23 @@ public class RouteRepositoryJdbc implements RouteRepository{
             e.printStackTrace();
         }
         return row;
+    }
+
+    @Override
+    public List<Route> findRoutesByUser(String username) {
+        String sqlQuery = "select * from routes where createdBy = ?";
+
+        List<Route> routes = null;
+        try {
+            routes = jdbcTemplate.query(sqlQuery, new Object[]{username}, new int[]{VARCHAR},
+                    (rs, rowNum)-> new Route(rs.getInt("routeId"),
+                            rs.getString("name"),
+                            rs.getDate("createTime"),
+                            rs.getString("startAddress"),
+                            rs.getString("endAddress")));
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return routes;
     }
 }
