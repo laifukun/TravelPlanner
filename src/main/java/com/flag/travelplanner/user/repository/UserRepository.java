@@ -3,12 +3,10 @@ package com.flag.travelplanner.user.repository;
 import com.flag.travelplanner.user.entity.User;
 
 public interface UserRepository {
-    public long count();
-    public int create(User user);
-    public User findById(long id);
-    public User findByUserName(String userName);
-    public User findByEmail(String email);
-    public int update(User user);
-    public int deleteById(long id);
-    public int deleteByUserName(String userName);
+    long count();
+    int create(User user);
+    User findByUsername(String username);
+    User findByEmail(String email);
+    int update(User user);
+    int deleteByUsername(String username);
 }

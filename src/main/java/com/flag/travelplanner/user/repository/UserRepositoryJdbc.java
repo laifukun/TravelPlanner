@@ -26,48 +26,40 @@ public class UserRepositoryJdbc implements UserRepository {
 
     @Override
     public int create(User user) {
-        String sqlQuery = "insert ignore into users (userId, userName, password, firstName, lastName, email) " +
-                "values (?, ?, ?, ?, ?, ?)";
-
-        return jdbcTemplate.update(sqlQuery, user.getUserId(),
-                user.getUserName(),
-                user.getPassword(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail());
-    }
-
-    @Override
-    public User findById(long id) {
-        String sqlQuery = "select * from users where userId = ?";
-
-        User user = null;
+        String sqlQuery = "insert ignore into users (username, password, firstName, lastName, email) " +
+                "values (?, ?, ?, ?, ?)";
+        String authQuery = "insert into authorities (username, authority) values (?, ?)";
+        int row = 0;
         try {
-            user = jdbcTemplate.queryForObject(sqlQuery, new Object[]{id}, new int[]{BIGINT},
-                    (rs, rowNum)-> new User(rs.getInt("userId"),
-                            rs.getString("userName"),
-                            rs.getString("password"),
-                            rs.getString("firstName"),
-                            rs.getString("lastName"),
-                            rs.getString("email")));
+            row = jdbcTemplate.update(sqlQuery,
+                    user.getUsername(),
+                    user.getPassword(),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getEmail());
+            jdbcTemplate.update(authQuery,
+                    user.getUsername(),
+                    "ROLE_USER");
         } catch(Exception e) {
             e.printStackTrace();
         }
-        return user;
+        return row;
     }
 
+
     @Override
-    public User findByUserName(String userName) {
-        String sqlQuery = "select * from users where userName = ?";
+    public User findByUsername(String username) {
+        String sqlQuery = "select * from users where username = ?";
         User user = null;
         try {
-            user = jdbcTemplate.queryForObject(sqlQuery, new Object[]{userName}, new int[]{VARCHAR},
-                    (rs, rowNum)-> new User(rs.getInt("userId"),
-                            rs.getString("userName"),
+            user = jdbcTemplate.queryForObject(sqlQuery, new Object[]{username}, new int[]{VARCHAR},
+                    (rs, rowNum)-> new User(rs.getString("userName"),
                             rs.getString("password"),
                             rs.getString("firstName"),
                             rs.getString("lastName"),
-                            rs.getString("email")));
+                            rs.getString("email"),
+                            rs.getBoolean("enabled"),
+                            rs.getDate("createTime")));
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -81,12 +73,13 @@ public class UserRepositoryJdbc implements UserRepository {
         User user = null;
         try {
             user = jdbcTemplate.queryForObject(sqlQuery, new Object[]{email}, new int[]{VARCHAR},
-                    (rs, rowNum)-> new User(rs.getInt("userId"),
-                            rs.getString("userName"),
+                    (rs, rowNum)-> new User(rs.getString("userName"),
                             rs.getString("password"),
                             rs.getString("firstName"),
                             rs.getString("lastName"),
-                            rs.getString("email")));
+                            rs.getString("email"),
+                            rs.getBoolean("enabled"),
+                            rs.getDate("createTime")));
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -95,29 +88,17 @@ public class UserRepositoryJdbc implements UserRepository {
 
     @Override
     public int update(User user) {
-        String sqlQuery ="update users set userName = ?, password = ?, firstName = ?, lastName = ?, email = ? where userId = ?";
+        String sqlQuery ="update users set password = ?, firstName = ?, lastName = ?, email = ? where userName = ?";
 
-        return jdbcTemplate.update(sqlQuery, user.getUserName(),
+        return jdbcTemplate.update(sqlQuery, user.getUsername(),
                 user.getPassword(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getEmail(),
-                user.getUserId());
+                user.getEmail());
     }
 
     @Override
-    public int deleteById(long id) {
-        int row = 0;
-        try {
-            row = jdbcTemplate.update("delete from users where userId = ?", id);
-        }catch(Exception e) {
-            e.printStackTrace();
-        }
-        return row;
-    }
-
-    @Override
-    public int deleteByUserName(String userName) {
-        return jdbcTemplate.update("delete from users where userName = ?", userName);
+    public int deleteByUsername(String username) {
+        return jdbcTemplate.update("delete from users where username = ?", username);
     }
 }

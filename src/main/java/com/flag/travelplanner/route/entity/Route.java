@@ -26,6 +26,7 @@ public class Route implements Serializable {
     @ManyToOne
     private User user;
 
+    public Route() {}
     public Route(long routeId, String name, Date createTime, String startAddress, String endAddress) {
         this.routeId = routeId;
         this.name = name;

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value="/routes")
 public class RouteController {
@@ -13,10 +15,16 @@ public class RouteController {
     @Autowired
     private RouteService routeService;
 
+    @GetMapping(value="")
+    @ResponseBody
+    public List<Route> retrieveAllRoutes() {
+        return routeService.retrieveAllRoutesOfUser();
+    }
+
     @GetMapping(value="/{route_id}")
     @ResponseBody
     public Route retrieveRoute(@PathVariable("route_id") long id) {
-        return routeService.retrieveRoute(id);
+        return routeService.retrieveRouteDetails(id);
     }
 
     @PostMapping()
@@ -27,14 +35,14 @@ public class RouteController {
     }
 
     @DeleteMapping()
-    @ResponseStatus(value= HttpStatus.OK)
+    @ResponseStatus(value= HttpStatus.ACCEPTED)
     public void deleteRoute(@PathVariable("route_id") long id) {
         routeService.deleteRoute(id);
     }
 
-    @PutMapping("/{route_id}")
-    @ResponseStatus(value= HttpStatus.OK)
-    public void updateRoute(@PathVariable("route_id") long id, @RequestBody Route route) {
+    @PutMapping("")
+    @ResponseStatus(value= HttpStatus.ACCEPTED)
+    public void updateRoute(@RequestBody Route route) {
          routeService.updateRoute(route);
     }
 
