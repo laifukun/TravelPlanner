@@ -28,11 +28,11 @@ public class SearchController {
     Search nearby POIs by three inputs:
     @lat: latitude of origin position
     @lng: longitude of origin position
-    @range: search radius in meter
+    @range: search radius in kilometer
      */
     @GetMapping(value = "/{lat}/{lng}/{range}")
     public List<POI> searchNearbyPOIs(@PathVariable("lat") double lat, @PathVariable("lng") double lng,
                                 @PathVariable("range") double range) {
-        return searchService.searchNearbyPOIs(lat, lng, range);
+        return searchService.searchNearbyPOIs(lat, lng, range*1000);
     }
 }

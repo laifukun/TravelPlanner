@@ -20,6 +20,10 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public List<POI> searchNearbyPOIs(double lat, double lng, double range) {
-        return searchRepository.findNearByPOIs(lat, lng, range);
+        List<POI> res = searchRepository.findNearByPOIs(lat, lng, range);
+        if (res.size() > 20) {
+            res = res.subList(0, 20);
+        }
+        return res;
     }
 }
