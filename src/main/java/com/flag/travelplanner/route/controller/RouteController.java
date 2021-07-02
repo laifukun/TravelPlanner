@@ -34,7 +34,7 @@ public class RouteController {
         return routeService.saveRoute(route);
     }
 
-    @DeleteMapping()
+    @DeleteMapping(value="/{route_id}")
     @ResponseStatus(value= HttpStatus.ACCEPTED)
     public void deleteRoute(@PathVariable("route_id") long id) {
         routeService.deleteRoute(id);
