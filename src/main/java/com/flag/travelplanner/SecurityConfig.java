@@ -59,7 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 })
                 .and()
                 .authorizeRequests()
-                .antMatchers("/routes", "/routes/*")
+                .antMatchers("/routes", "/routes/*", "/plans", "plans/*")
                 .hasAuthority("ROLE_USER")
                 .anyRequest().permitAll()
                 .and()
