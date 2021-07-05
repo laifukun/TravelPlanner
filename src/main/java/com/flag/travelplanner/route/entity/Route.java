@@ -26,6 +26,9 @@ public class Route implements Serializable {
     @ManyToOne
     private User user;
 
+    @ManyToOne
+    private Plan plan;
+
     public Route() {}
     public Route(long routeId, String name, Date createTime, String startAddress, String endAddress) {
         this.routeId = routeId;
@@ -89,5 +92,13 @@ public class Route implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Plan getPlan() {
+        return plan;
+    }
+
+    public void setPlan(Plan plan) {
+        this.plan = plan;
     }
 }

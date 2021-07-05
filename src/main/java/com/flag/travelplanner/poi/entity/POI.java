@@ -18,6 +18,7 @@ public class POI implements Serializable {
     private String imageUrl;
     private String description;
     private double popularity;
+    private double estimateVistTime;
 
     public POI() { }
     public POI(long poiId, String name, double lat, double lng, String imageUrl, String description, double popularity) {
@@ -84,6 +85,14 @@ public class POI implements Serializable {
 
     public void setPopularity(double popularity) {
         this.popularity = popularity;
+    }
+
+    public double getEstimateVistTime() {
+        return estimateVistTime;
+    }
+
+    public void setEstimateVistTime(double estimateVistTime) {
+        this.estimateVistTime = estimateVistTime;
     }
 }
 
