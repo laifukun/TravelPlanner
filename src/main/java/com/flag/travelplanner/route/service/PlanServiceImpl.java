@@ -70,7 +70,6 @@ public class PlanServiceImpl implements PlanService{
         User user = userService.getUserByUserName(username);
         plan.setOwner(user);
         planRepository.update(plan);
-        //routeService.deleteAllRoutesFromPlan(plan.getPlanId());
         for (int i = 0;  i < plan.getRoutes().size(); i++) {
             Route route = plan.getRoutes().get(i);
 
@@ -126,7 +125,10 @@ public class PlanServiceImpl implements PlanService{
             Route newRoute = new Route();
             newRoute.setStartAddress(route.getStartAddress());
             newRoute.setName("route" + i);
-            newRoute.setEndAddress(route.getEndAddress());
+            if (route.getEndAddress().isEmpty())
+                newRoute.setEndAddress(route.getStartAddress());
+            else
+                newRoute.setEndAddress(route.getEndAddress());
             newRoute.setPoiList(new LinkedList<>());
             i++;
             for (int id : path) {
@@ -134,7 +136,6 @@ public class PlanServiceImpl implements PlanService{
                     POI poi = route.getPoiList().get(id-1);
                     newRoute.getPoiList().add(poi);
                 }
-
             }
             routes.add(newRoute);
         }
