@@ -29,12 +29,13 @@ public class POIRouteRepositoryJdbc implements POIRouteRepository{
 
     @Override
     public int save(POIRoute poiRoute) {
-        String sqlPOIRoute = "insert into poi_route (poiId, routeId) values(?, ?)";
+        String sqlPOIRoute = "insert into poi_route (poiId, routeId) values(?, ?, ?)";
         int row = 0;
         try {
             row = jdbcTemplate.update(sqlPOIRoute,
                     poiRoute.getPoiId(),
-                    poiRoute.getRouteId()
+                    poiRoute.getRouteId(),
+                    poiRoute.getSeqNo()
                     );
         } catch(Exception e) {
             e.printStackTrace();
@@ -44,16 +45,28 @@ public class POIRouteRepositoryJdbc implements POIRouteRepository{
 
     @Override
     public int save(List<POIRoute> poiRouteList) {
-        String sqlPOIRoute = "insert into poi_route (poiId, routeId) values(?, ?)";
+        String sqlPOIRoute = "insert into poi_route (poiId, routeId, seqNo) values(?, ?, ?)";
         List<Object[]> poiRouteBatchArgs = new ArrayList<>();
         for (POIRoute poiRoute : poiRouteList) {
-            Object [] obj = new Object[]{poiRoute.getPoiId(), poiRoute.getRouteId()};
+            Object [] obj = new Object[]{poiRoute.getPoiId(), poiRoute.getRouteId(), poiRoute.getSeqNo()};
             poiRouteBatchArgs.add(obj);
         }
         int row = 0;
         try {
             row = jdbcTemplate.batchUpdate(sqlPOIRoute, poiRouteBatchArgs).length;
 
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return row;
+    }
+
+    @Override
+    public int delete(POIRoute poiRoute) {
+        String deletePOIRoute = "delete from poi_route where poiId = ? and routeId = ?";
+        int row = 0;
+        try{
+            row = jdbcTemplate.update(deletePOIRoute, poiRoute.getPoiId(), poiRoute.getRouteId());
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -69,7 +82,7 @@ public class POIRouteRepositoryJdbc implements POIRouteRepository{
         } catch(Exception e) {
             e.printStackTrace();
         }
-        return 0;
+        return row;
     }
 
     @Override
@@ -81,14 +94,15 @@ public class POIRouteRepositoryJdbc implements POIRouteRepository{
         } catch(Exception e) {
             e.printStackTrace();
         }
-        return 0;
+        return row;
     }
 
     @Override
     public List<POI> findByRoute(long routeId) {
         String poiQuery = "select pois.poiId, name, ST_X(geoLocation) as lat, ST_Y(geoLocation) as lng, " +
-                " imageUrl, description, popularity  from pois " +
-                "inner join poi_route on poi_route.poiId=pois.poiId where poi_route.routeId = ?";
+                " imageUrl, description, popularity, estimateVisitTime  from pois " +
+                "inner join poi_route on poi_route.poiId=pois.poiId where poi_route.routeId = ? " +
+                "order by poi_route.seqNo";
 
         List<POI> poiList = null;
         try {
@@ -99,7 +113,8 @@ public class POIRouteRepositoryJdbc implements POIRouteRepository{
                             rs.getDouble("lng"),
                             rs.getString("imageUrl"),
                             rs.getString("description"),
-                            rs.getDouble("popularity")));
+                            rs.getDouble("popularity"),
+                            rs.getDouble("estimateVisitTime")));
         } catch(Exception e) {
             e.printStackTrace();
         }

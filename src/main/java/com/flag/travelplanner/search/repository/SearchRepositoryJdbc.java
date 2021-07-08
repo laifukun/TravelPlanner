@@ -22,7 +22,7 @@ public class SearchRepositoryJdbc implements SearchRepository{
     @Override
     public List<POI> findPOIByKeyword(String keyword) {
         String sqlQuery = "select poiId, name, ST_X(geoLocation) as lat, ST_Y(geoLocation) as lng," +
-                " imageUrl, description, popularity from pois " +
+                " imageUrl, description, popularity, estimateVisitTime from pois " +
                 "where match(name, description) against(? in natural language mode)";
 
         List<POI> allPOIs = null;
@@ -34,7 +34,8 @@ public class SearchRepositoryJdbc implements SearchRepository{
                             rs.getDouble("lng"),
                             rs.getString("imageUrl"),
                             rs.getString("description"),
-                            rs.getDouble("popularity")));
+                            rs.getDouble("popularity"),
+                            rs.getDouble("estimateVisitTime")));
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -45,7 +46,7 @@ public class SearchRepositoryJdbc implements SearchRepository{
     public List<POI> findNearByPOIs(double lat, double lng, double range) {
         String origin = "POINT("+lat+" "+lng+")";
         String sqlQuery = "select poiId, name, ST_X(geoLocation) as lat, ST_Y(geoLocation) as lng," +
-                " imageUrl, description, popularity from pois " +
+                " imageUrl, description, popularity, estimateVisitTime  from pois " +
                 "where ST_distance_Sphere(ST_GeomFromText(?), geoLocation) < ?";
 
         List<POI> allPOIs = null;
@@ -57,7 +58,8 @@ public class SearchRepositoryJdbc implements SearchRepository{
                             rs.getDouble("lng"),
                             rs.getString("imageUrl"),
                             rs.getString("description"),
-                            rs.getDouble("popularity")));
+                            rs.getDouble("popularity"),
+                            rs.getDouble("estimateVisitTime")));
         } catch(Exception e) {
             e.printStackTrace();
         }

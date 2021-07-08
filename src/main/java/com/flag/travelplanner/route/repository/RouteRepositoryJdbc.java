@@ -33,8 +33,8 @@ public class RouteRepositoryJdbc implements RouteRepository{
     public Route save(Route route) {
 
         String sqlRoute = "insert ignore into routes " +
-                "(name, startAddress, endAddress, createdBy, planId) " +
-                "values ( ?, ?, ?, ?, ?)";
+                "(name, startAddress, endAddress, planId) " +
+                "values ( ?, ?, ?, ?)";
         String getLastId = "select last_insert_id()";
 
         try {
@@ -42,7 +42,6 @@ public class RouteRepositoryJdbc implements RouteRepository{
                     route.getName(),
                     route.getStartAddress(),
                     route.getEndAddress(),
-                    route.getUser().getUsername(),
                     route.getPlan().getPlanId());
             long routeId = jdbcTemplate.queryForObject(getLastId, Long.class);
             route.setRouteId(routeId);
@@ -65,7 +64,8 @@ public class RouteRepositoryJdbc implements RouteRepository{
                             rs.getString("name"),
                             rs.getDate("createTime"),
                             rs.getString("startAddress"),
-                            rs.getString("endAddress")));
+                            rs.getString("endAddress"),
+                            rs.getDate("updateTime")));
 
         } catch(Exception e) {
             e.printStackTrace();
@@ -75,7 +75,7 @@ public class RouteRepositoryJdbc implements RouteRepository{
 
     @Override
     public int update(Route route) {
-        String sqlQuery ="update routes set name = ?, startAddress = ?, endAddress = ?, createdBy = ? where routeId = ?";
+        String sqlQuery ="update routes set name = ?, startAddress = ?, endAddress = ? where routeId = ?";
       /*  String deletePOIRoute = "delete from poi_route where routeId = ?";
         String sqlPOIRoute = "insert into poi_route (poiId, routeId) values(?, ?)";
 
@@ -91,7 +91,6 @@ public class RouteRepositoryJdbc implements RouteRepository{
             row = jdbcTemplate.update(sqlQuery, route.getName(),
                     route.getStartAddress(),
                     route.getEndAddress(),
-                    route.getUser().getUsername(),
                     route.getRouteId());
            // jdbcTemplate.update(deletePOIRoute, route.getRouteId());
            // row = jdbcTemplate.batchUpdate(sqlPOIRoute, poiRouteBatchArgs).length;
@@ -126,24 +125,6 @@ public class RouteRepositoryJdbc implements RouteRepository{
         return row;
     }
 
-    @Override
-    public List<Route> findRoutesByUser(String username) {
-        String sqlQuery = "select * from routes where createdBy = ?";
-
-        List<Route> routes = null;
-        try {
-            routes = jdbcTemplate.query(sqlQuery, new Object[]{username}, new int[]{VARCHAR},
-                    (rs, rowNum)-> new Route(rs.getInt("routeId"),
-                            rs.getString("name"),
-                            rs.getDate("createTime"),
-                            rs.getString("startAddress"),
-                            rs.getString("endAddress")));
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        return routes;
-    }
-
     public List<Route> findRoutesByPlan(long planId) {
         String sqlQuery = "select * from routes where planId = ?";
 
@@ -154,7 +135,8 @@ public class RouteRepositoryJdbc implements RouteRepository{
                             rs.getString("name"),
                             rs.getDate("createTime"),
                             rs.getString("startAddress"),
-                            rs.getString("endAddress")));
+                            rs.getString("endAddress"),
+                            rs.getDate("updateTime")));
         } catch(Exception e) {
             e.printStackTrace();
         }

@@ -64,12 +64,24 @@ public class PlanServiceImpl implements PlanService{
 
     @Override
     @Transactional
-    public void updatePlan(Plan plan) {
+    public Plan updatePlan(Plan plan) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        User user = userService.getUserByUserName(username);
+        plan.setOwner(user);
         planRepository.update(plan);
-        routeService.deleteAllRoutesFromPlan(plan.getPlanId());
-        for (Route route : plan.getRoutes()) {
-            routeService.saveRoute(route);
+        //routeService.deleteAllRoutesFromPlan(plan.getPlanId());
+        for (int i = 0;  i < plan.getRoutes().size(); i++) {
+            Route route = plan.getRoutes().get(i);
+
+            if (plan.getRoutes().get(i).getRouteId()<=0) {
+                route.setPlan(plan);
+                plan.getRoutes().set(i,routeService.saveRoute(route));
+            } else {
+                routeService.updateRoute(route);
+            }
         }
+        return plan;
     }
 
     @Override
@@ -79,6 +91,7 @@ public class PlanServiceImpl implements PlanService{
     }
 
     @Override
+    @Transactional
     public Plan savePlan(Plan plan) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();

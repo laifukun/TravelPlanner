@@ -10,6 +10,5 @@ public interface RouteRepository {
     int update(Route route);
     int deleteById(long id);
     int deleteByPlan(long planId);
-    List<Route> findRoutesByUser(String username);
     List<Route> findRoutesByPlan(long planId);
 }

@@ -37,27 +37,21 @@ public class RouteServiceImpl implements RouteService{
         return route;
     }
 
-    @Override
-    @Transactional
-    public List<Route> retrieveAllRoutesOfUser() {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        //User user = userService.getUserByUserName(username);
-
-        return routeRepository.findRoutesByUser(username);
-    }
 
     @Override
     @Transactional
     public void updateRoute(Route route) {
+        if (route.getPoiList() == null) return;
         List<POIRoute> poiRouteList = new LinkedList<>();
+        int seqNo = 0;
+
         for (POI poi : route.getPoiList()) {
-            poiRouteList.add(new POIRoute(poi.getPoiId(), route.getRouteId()));
+            poiRouteList.add(new POIRoute(poi.getPoiId(), route.getRouteId(), seqNo++));
         }
         poiRouteRepository.deleteByRoute(route.getRouteId());
         routeRepository.update(route);
         poiRouteRepository.save(poiRouteList);
+
     }
 
     @Override
@@ -67,14 +61,11 @@ public class RouteServiceImpl implements RouteService{
 
     @Override
     public Route saveRoute(Route route) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        User user = userService.getUserByUserName(username);
-        route.setUser(user);
         Route newRoute = routeRepository.save(route);
         List<POIRoute> poiRouteList = new LinkedList<>();
+        int poiSeq = 0;
         for (POI poi : route.getPoiList()) {
-            poiRouteList.add(new POIRoute(poi.getPoiId(), newRoute.getRouteId()));
+            poiRouteList.add(new POIRoute(poi.getPoiId(), newRoute.getRouteId(), poiSeq++));
         }
         poiRouteRepository.save(poiRouteList);
 
@@ -95,5 +86,10 @@ public class RouteServiceImpl implements RouteService{
             route.setPoiList(poiList);
         }
         return routes;
+    }
+
+    @Override
+    public void deletePOIFromRoute(POIRoute poiRoute) {
+        poiRouteRepository.delete(poiRoute);
     }
 }

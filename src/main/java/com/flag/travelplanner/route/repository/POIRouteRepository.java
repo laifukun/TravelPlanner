@@ -10,6 +10,7 @@ public interface POIRouteRepository {
     long count();
     int save(POIRoute poiRoute);
     int save(List<POIRoute> poiRouteList);
+    int delete(POIRoute poiRoute);
     int deleteByPOI(long poiId);
     int deleteByRoute(long routeId);
     List<POI> findByRoute(long routeId);

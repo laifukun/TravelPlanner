@@ -7,11 +7,12 @@ public class POIRoute implements Serializable {
 
     private long poiId;
     private long routeId;
-
+    private int seqNo;
     public POIRoute() {}
-    public POIRoute(long poiId, long routeId) {
+    public POIRoute(long poiId, long routeId, int seqNo) {
         this.poiId = poiId;
         this.routeId = routeId;
+        this.seqNo = seqNo;
     }
 
     public long getPoiId() {
@@ -28,5 +29,13 @@ public class POIRoute implements Serializable {
 
     public void setRouteId(long routeId) {
         this.routeId = routeId;
+    }
+
+    public int getSeqNo() {
+        return seqNo;
+    }
+
+    public void setSeqNo(int seqNo) {
+        this.seqNo = seqNo;
     }
 }

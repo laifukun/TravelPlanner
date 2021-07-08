@@ -15,12 +15,6 @@ public class RouteController {
     @Autowired
     private RouteService routeService;
 
-    @GetMapping(value="")
-    @ResponseBody
-    public List<Route> retrieveAllRoutes() {
-        return routeService.retrieveAllRoutesOfUser();
-    }
-
     @GetMapping(value="/{route_id}")
     @ResponseBody
     public Route retrieveRoute(@PathVariable("route_id") long id) {

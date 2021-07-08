@@ -30,13 +30,13 @@ public class POIRepositoryJdbc implements POIRepository{
     @Override
     public int save(List<POI> poiList) {
 
-        String sqlQuery = "insert ignore into pois (poiId, name, geoLocation, imageUrl, description, popularity, estimateVisitTime) " +
+        String sqlQuery = "insert ignore into pois ( name, geoLocation, imageUrl, description, popularity, estimateVisitTime) " +
                 "values (?, ?, ?, ?, ?, ?, ?)";
 
         List<Object[]> poiBatchArgs = new ArrayList<>();
         for (POI poi : poiList) {
             String point = "POINT("+poi.getLat()+" "+poi.getLng()+")";
-            Object [] obj = new Object[]{poi.getPoiId(), poi.getName(),point, poi.getImageUrl(),poi.getDescription(),poi.getPopularity()};
+            Object [] obj = new Object[]{ poi.getName(),point, poi.getImageUrl(),poi.getDescription(),poi.getPopularity()};
             poiBatchArgs.add(obj);
         }
         int [] rows = null;
@@ -63,7 +63,7 @@ public class POIRepositoryJdbc implements POIRepository{
                     poi.getImageUrl(),
                     poi.getDescription(),
                     poi.getPopularity(),
-                    poi.getEstimateVistTime());
+                    poi.getEstimateVisitTime());
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -85,7 +85,8 @@ public class POIRepositoryJdbc implements POIRepository{
                             rs.getDouble("lng"),
                             rs.getString("imageUrl"),
                             rs.getString("description"),
-                            rs.getDouble("popularity")));
+                            rs.getDouble("popularity"),
+                            rs.getDouble("estimateVisitTime")));
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -104,7 +105,7 @@ public class POIRepositoryJdbc implements POIRepository{
                 poi.getImageUrl(),
                 poi.getDescription(),
                 poi.getPopularity(),
-                poi.getEstimateVistTime());
+                poi.getEstimateVisitTime());
     }
 
     @Override
@@ -116,7 +117,7 @@ public class POIRepositoryJdbc implements POIRepository{
         for (POI poi : poiList) {
             String point = "POINT("+poi.getLat()+" "+poi.getLng()+")";
             Object [] obj = new Object[]{poi.getPoiId(), poi.getName(),point, poi.getImageUrl(),
-                    poi.getDescription(),poi.getPopularity(), poi.getEstimateVistTime()};
+                    poi.getDescription(),poi.getPopularity(), poi.getEstimateVisitTime()};
             poiBatchArgs.add(obj);
         }
         int [] rows = null;
