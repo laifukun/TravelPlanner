@@ -1,7 +1,10 @@
 package com.flag.travelplanner.search.controller;
 
+import com.flag.travelplanner.map.service.MapService;
 import com.flag.travelplanner.poi.entity.POI;
+import com.flag.travelplanner.route.entity.Route;
 import com.flag.travelplanner.search.service.SearchService;
+import com.google.maps.model.PlaceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +17,8 @@ public class SearchController {
     @Autowired
     private SearchService searchService;
 
+    @Autowired
+    private MapService mapService;
     /* Search POIs by keyword
     Keywords could be in name or description
      */
@@ -34,5 +39,10 @@ public class SearchController {
     public List<POI> searchNearbyPOIs(@PathVariable("lat") double lat, @PathVariable("lng") double lng,
                                 @PathVariable("range") double range) {
         return searchService.searchNearbyPOIs(lat, lng, range*1000);
+    }
+
+    @PostMapping(value = "/route/restaurants")
+    public List<POI> searchNearbyPlaces(@RequestBody Route route) {
+        return mapService.searchNearbyPlaces(route, PlaceType.RESTAURANT);
     }
 }
