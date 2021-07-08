@@ -19,23 +19,22 @@ public class Route implements Serializable {
     private Date createTime;
     private String startAddress;
     private String endAddress;
+    private Date updateTime;
 
     @OneToMany
     private List<POI> poiList;
 
     @ManyToOne
-    private User user;
-
-    @ManyToOne
     private Plan plan;
 
     public Route() {}
-    public Route(long routeId, String name, Date createTime, String startAddress, String endAddress) {
+    public Route(long routeId, String name, Date createTime, String startAddress, String endAddress, Date updateTime) {
         this.routeId = routeId;
         this.name = name;
         this.createTime = createTime;
         this.startAddress = startAddress;
         this.endAddress = endAddress;
+        this.updateTime = updateTime;
     }
 
     public long getRouteId() {
@@ -86,12 +85,12 @@ public class Route implements Serializable {
         this.poiList = poiList;
     }
 
-    public User getUser() {
-        return user;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
     public Plan getPlan() {

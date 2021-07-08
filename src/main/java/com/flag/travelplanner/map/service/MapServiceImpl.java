@@ -1,16 +1,10 @@
 package com.flag.travelplanner.map.service;
 
-import com.flag.travelplanner.map.entity.Point;
 import com.flag.travelplanner.poi.entity.POI;
 import com.flag.travelplanner.route.entity.Route;
-import com.flag.travelplanner.route.repository.RouteRepository;
-import com.flag.travelplanner.route.repository.RouteRepositoryJdbc;
-import com.flag.travelplanner.route.service.RouteService;
-import com.flag.travelplanner.route.service.RouteServiceImpl;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+
 import com.google.maps.DistanceMatrixApi;
-import com.google.maps.DistanceMatrixApiRequest;
+
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;
@@ -18,13 +12,10 @@ import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.LatLng;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.reactive.function.client.WebClient;
+
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+
 
 @Service
 public class MapServiceImpl implements MapService {
@@ -32,12 +23,12 @@ public class MapServiceImpl implements MapService {
     private static String API_KEY = "AIzaSyDtVxnLGqwly8qiErGo1wKya8yKYri6GIY";
 
     @Override
-    public Point getLatLngFromAddress(String address) {
+    public LatLng getLatLngFromAddress(String address) {
         return null;
     }
 
     @Override
-    public String getAdressFromLatLng(Point point) {
+    public String getAddressFromLatLng() {
         return null;
     }
 
@@ -103,7 +94,7 @@ public class MapServiceImpl implements MapService {
         for (int i = 0; i < n; i++) {
             int j = 1;
             for (POI poi : route.getPoiList()) {
-                time[i][j++] += poi.getEstimateVistTime();
+                time[i][j++] += poi.getEstimateVisitTime();
             }
         }
 

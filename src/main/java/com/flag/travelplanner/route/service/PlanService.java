@@ -8,7 +8,7 @@ import java.util.List;
 public interface PlanService {
     Plan retrievePlanDetails(long id);
     List<Plan> retrieveAllPlansOfUser();
-    void updatePlan(Plan plan);
+    Plan updatePlan(Plan plan);
     void deletePlan(long id);
     Plan savePlan(Plan plan);
     Plan generatePlan(Plan plan, double maxHour);

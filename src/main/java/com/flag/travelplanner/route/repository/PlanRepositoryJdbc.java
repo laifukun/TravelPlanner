@@ -67,12 +67,13 @@ public class PlanRepositoryJdbc implements PlanRepository{
 
     @Override
     public int update(Plan plan) {
-        String sqlQuery ="update plans set name = ?, ower  = ? where planId = ?";
+        String sqlQuery ="update plans set name = ?, owner  = ? where planId = ?";
 
         int row = 0;
         try {
             row = jdbcTemplate.update(sqlQuery, plan.getName(),
-                    plan.getOwner().getUsername()
+                    plan.getOwner().getUsername(),
+                    plan.getPlanId()
                     );
         } catch(Exception e) {
             e.printStackTrace();
