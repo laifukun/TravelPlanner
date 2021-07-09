@@ -1,5 +1,6 @@
 package com.flag.travelplanner.map.service;
 
+import com.flag.travelplanner.map.entity.Place;
 import com.flag.travelplanner.poi.entity.POI;
 import com.flag.travelplanner.route.entity.Route;
 import com.google.maps.model.LatLng;

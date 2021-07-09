@@ -41,8 +41,12 @@ public class SearchController {
         return searchService.searchNearbyPOIs(lat, lng, range*1000);
     }
 
-    @PostMapping(value = "/route/restaurants")
-    public List<POI> searchNearbyPlaces(@RequestBody Route route) {
-        return mapService.searchNearbyPlaces(route, PlaceType.RESTAURANT);
+    @PostMapping(value = "/route/{place_type}")
+    public List<POI> searchNearbyPlaces(@RequestBody Route route, @PathVariable("place_type") String placeType) {
+        if (placeType.equals("restaurants"))
+            return mapService.searchNearbyPlaces(route, PlaceType.RESTAURANT);
+        if (placeType.equals("hotels"))
+            return mapService.searchNearbyPlaces(route, PlaceType.LODGING);
+        return null;
     }
 }

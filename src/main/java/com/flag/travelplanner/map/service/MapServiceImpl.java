@@ -3,11 +3,8 @@ package com.flag.travelplanner.map.service;
 import com.flag.travelplanner.poi.entity.POI;
 import com.flag.travelplanner.route.entity.Route;
 
-import com.google.maps.DistanceMatrixApi;
+import com.google.maps.*;
 
-import com.google.maps.GeoApiContext;
-import com.google.maps.GeocodingApi;
-import com.google.maps.PlacesApi;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.*;
 import org.springframework.stereotype.Service;
@@ -153,40 +150,47 @@ public class MapServiceImpl implements MapService {
         String endAddress = route.getStartAddress();
 
         int n = route.getPoiList().size();
-        if (startAddress.equals(endAddress) || endAddress.trim().isEmpty()) {
-            n += 1;
-        } else {
-            n += 2;
+        if (!startAddress.trim().isEmpty()) {
+            if (startAddress.equals(endAddress) || endAddress.trim().isEmpty()) {
+                n += 1;
+            } else {
+                n += 2;
+            }
         }
+
         LatLng[] latLngs = new LatLng[n];
-        int k = 1;
+        int k = (n == route.getPoiList().size()) ? 0 : 1;
         for (POI poi : route.getPoiList()) {
             latLngs[k++] = new LatLng(poi.getLat(), poi.getLng());
         }
         try {
-            GeocodingResult[] results = GeocodingApi.geocode(context,
-                    startAddress).await();
-            latLngs[0] = results[0].geometry.location;
-            if (!startAddress.equals(endAddress) && !endAddress.trim().isEmpty()) {
-                results = GeocodingApi.geocode(context,
-                    endAddress).await();
-                latLngs[n-1] = results[0].geometry.location;
+            if (!startAddress.trim().isEmpty()) {
+                GeocodingResult[] results = GeocodingApi.geocode(context,
+                        startAddress).await();
+                latLngs[0] = results[0].geometry.location;
+                if (!startAddress.equals(endAddress) && !endAddress.trim().isEmpty()) {
+                    results = GeocodingApi.geocode(context,
+                            endAddress).await();
+                    latLngs[n-1] = results[0].geometry.location;
+                }
             }
+
 
             for (LatLng latLng : latLngs) {
                 response = PlacesApi.textSearchQuery(context, placeType)
                         .location(latLng)
-                        .radius(200)
+                        .radius(2500)
                         .type(placeType)
                         .await();
                 for (PlacesSearchResult result : response.results) {
+                    //PlacesApi.photo(context, result.photos[0].photoReference).await();
                     searchResults.add(new POI((long) (Math.random()*Long.MAX_VALUE), result.name,
                             result.geometry.location.lat,
                             result.geometry.location.lng,
-                            "",
+                            result.icon.toString(),
                             result.formattedAddress,
                             result.rating,
-                            0));
+                            0.5));
                 }
             }
 
@@ -198,7 +202,7 @@ public class MapServiceImpl implements MapService {
             e.printStackTrace();
         }
 
-
+        context.shutdown();
         return searchResults;
     }
 

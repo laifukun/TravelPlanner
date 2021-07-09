@@ -44,6 +44,10 @@ public class PlanController {
         }
     }
 
+    /***
+     *
+     * @param id
+     */
     @DeleteMapping(value="/{plan_id}")
     @ResponseStatus(value= HttpStatus.ACCEPTED)
     public void deletePlan(@PathVariable("plan_id") long id) {
