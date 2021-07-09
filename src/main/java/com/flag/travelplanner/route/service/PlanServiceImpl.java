@@ -124,7 +124,7 @@ public class PlanServiceImpl implements PlanService{
         for (List<Integer> path : routePlan) {
             Route newRoute = new Route();
             newRoute.setStartAddress(route.getStartAddress());
-            newRoute.setName("route" + i);
+            newRoute.setName("Route " + i);
             if (route.getEndAddress().isEmpty())
                 newRoute.setEndAddress(route.getStartAddress());
             else

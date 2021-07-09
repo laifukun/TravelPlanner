@@ -41,17 +41,17 @@ public class RouteServiceImpl implements RouteService{
     @Override
     @Transactional
     public void updateRoute(Route route) {
-        if (route.getPoiList() == null) return;
+        routeRepository.update(route);
         List<POIRoute> poiRouteList = new LinkedList<>();
         int seqNo = 0;
 
+        if (route.getPoiList() == null) return;
         for (POI poi : route.getPoiList()) {
             poiRouteList.add(new POIRoute(poi.getPoiId(), route.getRouteId(), seqNo++));
         }
         poiRouteRepository.deleteByRoute(route.getRouteId());
-        routeRepository.update(route);
-        poiRouteRepository.save(poiRouteList);
 
+        poiRouteRepository.save(poiRouteList);
     }
 
     @Override
