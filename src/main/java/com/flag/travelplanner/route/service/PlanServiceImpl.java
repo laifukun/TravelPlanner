@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -108,7 +109,18 @@ public class PlanServiceImpl implements PlanService{
     public Plan generatePlan(Plan plan, double maxHour) {
         if (plan.getRoutes().isEmpty()) return plan;
 
-        Route route = plan.getRoutes().get(0);
+        Route route = new Route();
+        route.setName(plan.getRoutes().get(0).getName());
+        route.setStartAddress(plan.getRoutes().get(0).getStartAddress());
+        route.setEndAddress(plan.getRoutes().get(0).getEndAddress());
+        route.setPoiList(new ArrayList<>());
+        for (Route rt : plan.getRoutes()) {
+            if (rt.getPoiList() != null) {
+                for (POI poi : rt.getPoiList()) {
+                    route.getPoiList().add(poi);
+                }
+            }
+        }
         double [][] timeMatrix =  mapService.buildDistanceMatrix(route);
         List<List<Integer>> routePlan;
         RouteAlgorithm routeAlgorithm;
@@ -117,7 +129,7 @@ public class PlanServiceImpl implements PlanService{
         } else {
             routeAlgorithm = new MinimizeDaysSimpleAlgos();
         }
-        routePlan = routeAlgorithm.generateRoute(timeMatrix, maxHour);
+        routePlan = routeAlgorithm.generateRoute(route, timeMatrix, maxHour);
 
         List<Route> routes = new LinkedList<>();
         int i = 0;

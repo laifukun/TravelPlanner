@@ -89,12 +89,7 @@ public class MapServiceImpl implements MapService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        for (int i = 0; i < n; i++) {
-            int j = 1;
-            for (POI poi : route.getPoiList()) {
-                time[i][j++] += poi.getEstimateVisitTime();
-            }
-        }
+
 
         context.shutdown();
         return time;
@@ -174,7 +169,6 @@ public class MapServiceImpl implements MapService {
                     latLngs[n-1] = results[0].geometry.location;
                 }
             }
-
 
             for (LatLng latLng : latLngs) {
                 response = PlacesApi.textSearchQuery(context, placeType)

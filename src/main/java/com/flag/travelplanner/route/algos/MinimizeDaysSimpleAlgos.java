@@ -1,5 +1,8 @@
 package com.flag.travelplanner.route.algos;
 
+import com.flag.travelplanner.poi.entity.POI;
+import com.flag.travelplanner.route.entity.Route;
+
 import java.util.*;
 
 public class MinimizeDaysSimpleAlgos implements RouteAlgorithm{
@@ -13,10 +16,17 @@ public class MinimizeDaysSimpleAlgos implements RouteAlgorithm{
     }
     private  List<List<Integer>> POIArrangement;
     @Override
-    public List<List<Integer>> generateRoute(double[][] timeMatrix, double maxAllowableHours) {
+    public List<List<Integer>> generateRoute(Route route, double[][] timeMatrix, double maxAllowableHours) {
         POIArrangement = new ArrayList<>();
         if (timeMatrix.length == 0) return POIArrangement;
         int n = timeMatrix.length;
+
+        for (int i = 0; i < n; i++) {
+            int j = 1;
+            for (POI poi : route.getPoiList()) {
+                timeMatrix[i][j++] += poi.getEstimateVisitTime();
+            }
+        }
 
         PriorityQueue<Pair>[] neighboursPQ = new PriorityQueue[n];
         for (int i = 0; i < n; i++) {
